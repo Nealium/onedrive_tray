@@ -161,6 +161,24 @@ void Window::moreColors()
     }
 }
 
+void Window::defineTrayIconSync(const QColor &color)
+// Slot function to define the icon of the tray icon
+{
+    appConfig->syncColor = color;
+    changeTrayIcon(true, false);
+}
+
+void Window::moreSyncColors()
+// Slot function to show the more colors window
+{
+    MoreColorsDialog *mcd = new MoreColorsDialog(appConfig->syncColor);
+    if (mcd->exec())
+    {
+        appConfig->syncColor = mcd->colorValidated();
+        changeTrayIcon(true, false);
+    }
+}
+
 void Window::changeTrayIcon(bool forceChange, bool sync)
 // Change the icon of the tray icon depending on the context (is sincing or not)
 {
@@ -168,10 +186,14 @@ void Window::changeTrayIcon(bool forceChange, bool sync)
     if (forceChange || !(isSyncing && sync))
     {
         if (sync || (isSyncing && forceChange))
+        {
             *currentIconPath = IconInfo::syncingOnedriveIconPathName();
-        else
+            trayIcon->setIcon(IconInfo::changeColorIcon(*currentIconPath, appConfig->syncColor));
+        }
+        else{
             *currentIconPath = IconInfo::onedriveIconPathName();
-        trayIcon->setIcon(IconInfo::changeColorIcon(*currentIconPath, appConfig->iconColor));
+            trayIcon->setIcon(IconInfo::changeColorIcon(*currentIconPath, appConfig->iconColor));
+        }
         saveSettings();
     }
 }
@@ -496,6 +518,31 @@ void Window::createActions()
     connect(moreColorsAction,  &QAction::triggered, this, &Window::moreColors);
     iconColorGroup->addAction(moreColorsAction);
 
+    syncColorGroup = new QActionGroup(this);
+    bool defaultSyncColorFound(false);
+    for (int i = 0; i < IconInfo::defaultColors().size(); i++)
+    {
+        QColor color = IconInfo::defaultColors()[i];
+        QAction *syncColorAction = new QAction(IconInfo::defaultColorsText()[i], this);
+        syncColorAction->setCheckable(true);
+        if (appConfig->syncColor == color)
+        {
+            syncColorAction->setChecked(true);
+            defaultSyncColorFound = true;
+        }
+        // TO DO : le menu s'affiche trop grand
+        syncColorAction->setIcon(IconInfo::changeColorIcon(IconInfo::syncingOnedriveIconPathName(), color));
+
+        connect(syncColorAction,  &QAction::triggered, this, [this, color]{ defineTrayIconSync(color); });
+        syncColorGroup->addAction(syncColorAction);
+    }
+
+    QAction *moreSyncColorsAction = new QAction(tr("&More colors..."), this);
+    moreSyncColorsAction->setCheckable(true);
+    moreSyncColorsAction->setChecked(!defaultSyncColorFound);
+    connect(moreSyncColorsAction,  &QAction::triggered, this, &Window::moreSyncColors);
+    syncColorGroup->addAction(moreSyncColorsAction);
+
     quitAction = new QAction(tr("&Quit OneDrive"), this);
     connect(quitAction, &QAction::triggered, this, &Window::quit);
 
@@ -531,6 +578,9 @@ void Window::createTrayIcon()
     QMenu* submenuColor = trayIconMenu->addMenu(tr("Icon color"));
     submenuColor->addActions(iconColorGroup->actions());
 
+    QMenu* submenuSyncColor = trayIconMenu->addMenu(tr("Sync color"));
+    submenuSyncColor->addActions(syncColorGroup->actions());
+
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(quitAction);
     trayIconMenu->addAction(aboutAction);
@@ -564,6 +614,7 @@ void Window::loadSettings()
     appConfig = new AppConfiguration;
     QSettings settings;
     appConfig->iconColor = settings.value("Tray/IconColor", QColor(Qt::blue)).value<QColor>();
+    appConfig->syncColor = settings.value("Tray/SyncColor", QColor("#094ab2")).value<QColor>();
     settings.beginGroup("RecentEventWindow");
     appConfig->size = settings.value("Size", QSize(400, 300)).toSize();
     appConfig->pos = settings.value("Position", QPoint(0, 0)).toPoint();
@@ -577,6 +628,7 @@ void Window::saveSettings()
 {
     QSettings settings;
     settings.setValue("Tray/IconColor", appConfig->iconColor);
+    settings.setValue("Tray/SyncColor", appConfig->syncColor);
     settings.beginGroup("RecentEventWindow");
     settings.setValue("Size", appConfig->size);
     settings.setValue("Position", appConfig->pos);

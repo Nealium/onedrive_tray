@@ -15,6 +15,7 @@
 struct AppConfiguration
 {
   QColor iconColor;
+  QColor syncColor;
   QSize size;
   QPoint pos;
 };
@@ -51,7 +52,9 @@ class Window : public QDialog
     void readStdError();
     void OpenConfigurationWindow();
     void defineTrayIcon(const QColor &color);
+    void defineTrayIconSync(const QColor &color);
     void moreColors();
+    void moreSyncColors();
 
   private:
     void createIconGroupBox();
@@ -104,6 +107,7 @@ class Window : public QDialog
     QAction *restartAction;
     QAction *suspendAction;
     QActionGroup *iconColorGroup;
+    QActionGroup *syncColorGroup;
     QAction *quitAction;
     QAction *aboutAction;
   

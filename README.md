@@ -12,8 +12,12 @@ To use the program you must first compile and install the onedrive client availa
 
 # How to compile
 
-The steps bellow should be suffice to compile the program:
+Requirements on Pop!_OS 22.04 LTS
+```
+sudo apt install qtchooser qtcreator qt5-qmake qtbase5-dev
+```
 
+The steps bellow should be suffice to compile the program:
 ```
 git clone https://github.com/DanielBorgesOliveira/onedrive_tray.git
 
