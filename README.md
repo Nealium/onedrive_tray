@@ -10,6 +10,16 @@ The program was written using lib QT 5.13.0.
 
 To use the program you must first compile and install the onedrive client available at https://github.com/abraunegg/onedrive.
 
+
+# Fork Differences
+* Default Icon & Syncing Icon colors are independent of each other
+  * This makes it easier to tell when it is actively syncing 
+* 'OneDrive-sync' *(the raining svg)* can be toggled off
+* Updated 'More colors' SVG Preview to show raining icon if changing it.
+* Added OneDrive Blues. *(Color Picker from Logo)*
+  * Defaults are now: Icon=White & Sync=OneDrive Darker
+* Removed Quick-Grab QT Colors (Blue, Red, Green, Black) Please Use 'More Colors' instead
+
 # How to compile
 
 Requirements on Pop!_OS 22.04 LTS
