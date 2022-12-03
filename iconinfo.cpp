@@ -14,13 +14,13 @@ const QString IconInfo::m_syncingOnedriveIconPathName = QString(":/images/OneDri
 
 QStringList IconInfo::defaultColorsText()
 {
-    static const QStringList result = { tr("OneNote Darker"), tr("OneNote Lighter"),  tr("White"), tr("Blue"), tr("Red"), tr("Green"), tr("Black")};
+    static const QStringList result = { tr("OneNote Darker"), tr("OneNote Lighter"),  tr("White")};
     return result;
 }
 
 QVector<QColor> IconInfo::defaultColors()
 {
-    QVector<QColor> result {"#094ab2", "#23aaeb", Qt::white, Qt::blue , Qt::red, Qt::green, Qt::black};
+    QVector<QColor> result {"#094ab2", "#23aaeb", Qt::white};
     return result;
 }
 

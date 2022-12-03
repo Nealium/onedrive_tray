@@ -8,7 +8,7 @@
 #include <morecolors.h>
 
 // TO DO : ajouter le parent
-MoreColorsDialog::MoreColorsDialog(const QColor &defaultColor)
+MoreColorsDialog::MoreColorsDialog(const QColor &defaultColor, const bool &rainIcon)
 // Dialog box to choose the color of the icon
 {
     setWindowTitle(tr("More colors"));
@@ -25,11 +25,11 @@ MoreColorsDialog::MoreColorsDialog(const QColor &defaultColor)
     colorDlg->setCustomColor(4, Qt::red);
     colorDlg->setCustomColor(5, Qt::yellow);
     colorDlg->setCustomColor(6, Qt::cyan);
-    connect(colorDlg, &QColorDialog::currentColorChanged, this, &MoreColorsDialog::currentColorChanged);
+    connect(colorDlg, &QColorDialog::currentColorChanged, this, [this, rainIcon]{ currentColorChanged(colorDlg->currentColor(), rainIcon); });
     
     iconButton = new QToolButton;
     iconButton->setIconSize(QSize(128, 128));
-    iconButton->setIcon(IconInfo::changeColorIcon(IconInfo::syncingOnedriveIconPathName(false), defaultColor));
+    iconButton->setIcon(IconInfo::changeColorIcon(IconInfo::syncingOnedriveIconPathName(rainIcon), defaultColor));
 
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->addWidget(colorDlg);
@@ -48,10 +48,10 @@ MoreColorsDialog::MoreColorsDialog(const QColor &defaultColor)
     setLayout(vLayout);
 }
 
-void MoreColorsDialog::currentColorChanged(const QColor &color)
+void MoreColorsDialog::currentColorChanged(const QColor &color, const bool &rainIcon)
 // Slot function called when the user selects a new color
 {
-    iconButton->setIcon(IconInfo::changeColorIcon(IconInfo::syncingOnedriveIconPathName(false), color));
+    iconButton->setIcon(IconInfo::changeColorIcon(IconInfo::syncingOnedriveIconPathName(rainIcon), color));
 }
 
 QColor MoreColorsDialog::colorValidated()

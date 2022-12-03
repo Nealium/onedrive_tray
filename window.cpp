@@ -153,7 +153,7 @@ void Window::defineTrayIcon(const QColor &color)
 void Window::moreColors()
 // Slot function to show the more colors window
 {
-    MoreColorsDialog *mcd = new MoreColorsDialog(appConfig->iconColor);
+    MoreColorsDialog *mcd = new MoreColorsDialog(appConfig->iconColor, false);
     if (mcd->exec())
     {
         appConfig->iconColor = mcd->colorValidated();
@@ -171,7 +171,7 @@ void Window::defineTrayIconSync(const QColor &color)
 void Window::moreSyncColors()
 // Slot function to show the more colors window
 {
-    MoreColorsDialog *mcd = new MoreColorsDialog(appConfig->syncColor);
+    MoreColorsDialog *mcd = new MoreColorsDialog(appConfig->syncColor, appConfig->rainIcon);
     if (mcd->exec())
     {
         appConfig->syncColor = mcd->colorValidated();

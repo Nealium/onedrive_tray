@@ -13,13 +13,13 @@ class MoreColorsDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit MoreColorsDialog(const QColor &defaultColor);
+    explicit MoreColorsDialog(const QColor &defaultColor, const bool &rainIcon);
     QColor colorValidated();
 
 protected:
 
 private slots:
-    void currentColorChanged(const QColor &color);
+    void currentColorChanged(const QColor &color, const bool &rainIcon);
 
 private:
   QColorDialog *colorDlg;
