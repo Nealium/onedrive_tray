@@ -179,6 +179,12 @@ void Window::moreSyncColors()
     }
 }
 
+void Window::toggleRainIcon()
+{
+    appConfig->rainIcon = !(appConfig->rainIcon);
+    changeTrayIcon(true, false);
+}
+
 void Window::changeTrayIcon(bool forceChange, bool sync)
 // Change the icon of the tray icon depending on the context (is sincing or not)
 {
@@ -187,7 +193,7 @@ void Window::changeTrayIcon(bool forceChange, bool sync)
     {
         if (sync || (isSyncing && forceChange))
         {
-            *currentIconPath = IconInfo::syncingOnedriveIconPathName();
+            *currentIconPath = IconInfo::syncingOnedriveIconPathName(appConfig->rainIcon);
             trayIcon->setIcon(IconInfo::changeColorIcon(*currentIconPath, appConfig->syncColor));
         }
         else{
@@ -506,7 +512,7 @@ void Window::createActions()
             defaultColorFound = true;
         }
         // TO DO : le menu s'affiche trop grand
-        iconColorAction->setIcon(IconInfo::changeColorIcon(IconInfo::syncingOnedriveIconPathName(), color));
+        iconColorAction->setIcon(IconInfo::changeColorIcon(IconInfo::syncingOnedriveIconPathName(appConfig->rainIcon), color));
 
         connect(iconColorAction,  &QAction::triggered, this, [this, color]{ defineTrayIcon(color); });
         iconColorGroup->addAction(iconColorAction);
@@ -517,6 +523,11 @@ void Window::createActions()
     moreColorsAction->setChecked(!defaultColorFound);
     connect(moreColorsAction,  &QAction::triggered, this, &Window::moreColors);
     iconColorGroup->addAction(moreColorsAction);
+
+    rainIconAction = new QAction(tr("&Rain sync icon"), this);
+    rainIconAction->setCheckable(true);
+    rainIconAction->setChecked(appConfig->rainIcon);
+    connect(rainIconAction,  &QAction::triggered, this, &Window::toggleRainIcon);
 
     syncColorGroup = new QActionGroup(this);
     bool defaultSyncColorFound(false);
@@ -531,7 +542,7 @@ void Window::createActions()
             defaultSyncColorFound = true;
         }
         // TO DO : le menu s'affiche trop grand
-        syncColorAction->setIcon(IconInfo::changeColorIcon(IconInfo::syncingOnedriveIconPathName(), color));
+        syncColorAction->setIcon(IconInfo::changeColorIcon(IconInfo::syncingOnedriveIconPathName(appConfig->rainIcon), color));
 
         connect(syncColorAction,  &QAction::triggered, this, [this, color]{ defineTrayIconSync(color); });
         syncColorGroup->addAction(syncColorAction);
@@ -578,6 +589,7 @@ void Window::createTrayIcon()
     QMenu* submenuColor = trayIconMenu->addMenu(tr("Icon color"));
     submenuColor->addActions(iconColorGroup->actions());
 
+    trayIconMenu->addAction(rainIconAction);
     QMenu* submenuSyncColor = trayIconMenu->addMenu(tr("Sync color"));
     submenuSyncColor->addActions(syncColorGroup->actions());
 
@@ -615,6 +627,17 @@ void Window::loadSettings()
     QSettings settings;
     appConfig->iconColor = settings.value("Tray/IconColor", QColor(Qt::blue)).value<QColor>();
     appConfig->syncColor = settings.value("Tray/SyncColor", QColor("#094ab2")).value<QColor>();
+
+    // TODO: This should be better, native QVariant -> bool
+    if (settings.value("Tray/RainIcon") != "false")
+    {
+      appConfig->rainIcon = true;
+    }
+    else
+    {
+      appConfig->rainIcon = false;
+    }
+
     settings.beginGroup("RecentEventWindow");
     appConfig->size = settings.value("Size", QSize(400, 300)).toSize();
     appConfig->pos = settings.value("Position", QPoint(0, 0)).toPoint();
@@ -629,6 +652,7 @@ void Window::saveSettings()
     QSettings settings;
     settings.setValue("Tray/IconColor", appConfig->iconColor);
     settings.setValue("Tray/SyncColor", appConfig->syncColor);
+    settings.setValue("Tray/RainIcon", appConfig->rainIcon);
     settings.beginGroup("RecentEventWindow");
     settings.setValue("Size", appConfig->size);
     settings.setValue("Position", appConfig->pos);

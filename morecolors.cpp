@@ -29,7 +29,7 @@ MoreColorsDialog::MoreColorsDialog(const QColor &defaultColor)
     
     iconButton = new QToolButton;
     iconButton->setIconSize(QSize(128, 128));
-    iconButton->setIcon(IconInfo::changeColorIcon(IconInfo::syncingOnedriveIconPathName(), defaultColor));
+    iconButton->setIcon(IconInfo::changeColorIcon(IconInfo::syncingOnedriveIconPathName(false), defaultColor));
 
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->addWidget(colorDlg);
@@ -51,7 +51,7 @@ MoreColorsDialog::MoreColorsDialog(const QColor &defaultColor)
 void MoreColorsDialog::currentColorChanged(const QColor &color)
 // Slot function called when the user selects a new color
 {
-    iconButton->setIcon(IconInfo::changeColorIcon(IconInfo::syncingOnedriveIconPathName(), color));
+    iconButton->setIcon(IconInfo::changeColorIcon(IconInfo::syncingOnedriveIconPathName(false), color));
 }
 
 QColor MoreColorsDialog::colorValidated()

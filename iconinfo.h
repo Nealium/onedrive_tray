@@ -13,7 +13,7 @@ public:
   static QStringList defaultColorsText(); // Default colors in QString
   static QVector<QColor> defaultColors(); // Default colors in QColor
   static QString onedriveIconPathName(); // Path name of the onedrive icon
-  static QString syncingOnedriveIconPathName(); // Path name of the onedrive icon when syncing
+  static QString syncingOnedriveIconPathName(const bool &rainIcon); // Path name of the onedrive icon when syncing
   static QPixmap changeColorIcon(const QString &imageName, const QColor &color);
 
 private:

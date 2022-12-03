@@ -10,7 +10,7 @@ IconInfo::~IconInfo(){}
 
 const QString IconInfo::m_onedriveIconPathName = QString(":/images/OneDrive.svg");
 
-const QString IconInfo::m_syncingOnedriveIconPathName = QString(":/images/OneDrive.svg");
+const QString IconInfo::m_syncingOnedriveIconPathName = QString(":/images/OneDrive-sync.svg");
 
 QStringList IconInfo::defaultColorsText()
 {
@@ -29,9 +29,13 @@ QString IconInfo::onedriveIconPathName()
     return m_onedriveIconPathName;
 }
 
-QString IconInfo::syncingOnedriveIconPathName()
+QString IconInfo::syncingOnedriveIconPathName(const bool &rainIcon)
 {
-    return m_syncingOnedriveIconPathName;
+    if (rainIcon)
+    {
+      return m_syncingOnedriveIconPathName;
+    }
+    return m_onedriveIconPathName;
 }
 
 QPixmap IconInfo::changeColorIcon(const QString &imageName, const QColor &color)
